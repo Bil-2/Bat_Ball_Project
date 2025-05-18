@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bat Ball Stump Game</title>
+  <link rel="stylesheet" href="batball.css">
+</head>
+<body>
+  <h1>🏏 🤩 Bat Ball Stump Game 🤩 🏏</h1>
+
+  <div class="round" id="roundInfo">Round 1 of 10</div> 
+  <div class="choices" id="choicesBox">
+    <div class="choice" onclick="playGame('Bat')">🏏 Bat</div>
+    <div class="choice" onclick="playGame('Ball')">🏐 Ball</div>
+    <div class="choice" onclick="playGame('Stump')">🧱 Stump</div>
+  </div>
+
+  <div class="result" id="resultText">Make your move!</div>
+  <div class="score" id="scoreBoard">You: 0 | Computer: 0</div>
+  <button class="play-again hidden" id="playAgainBtn" onclick="resetGame()">🔁 Play Again</button>
+
+  <script>
+    const options = ['Bat', 'Ball', 'Stump'];
+    let userScore = 0;
+    let compScore = 0;
+    let round = 1;
+    const maxRounds = 10;
+
+    function playGame(userChoice) {
+      if (round > maxRounds) return;
+
+      const compChoice = options[Math.floor(Math.random() * 3)];
+      let result = '';
+
+      if (userChoice === compChoice) {
+        result = "It's a tie! 🤝";
+      } else if (
+        (userChoice === 'Bat' && compChoice === 'Ball') ||
+        (userChoice === 'Ball' && compChoice === 'Stump') ||
+        (userChoice === 'Stump' && compChoice === 'Bat')
+      ) {
+        result = `You Win! 🎉 ${userChoice} beats ${compChoice}`;
+        userScore++;
+      } else {
+        result = `You Lose! 😢 ${compChoice} beats ${userChoice}`;
+        compScore++;
+      }
+
+      document.getElementById('resultText').textContent = result;
+      document.getElementById('scoreBoard').textContent = `You: ${userScore} | Computer: ${compScore}`;
+      document.getElementById('roundInfo').textContent = `Round ${round + 1 <= maxRounds ? round + 1 : maxRounds} of ${maxRounds}`;
+      round++;
+
+      if (round > maxRounds) {
+        endGame();
+      }
+    }
+
+    function endGame() {
+      let finalMessage = '';
+      if (userScore > compScore) {
+        finalMessage = `🏆 Game Over! You won ${userScore} to ${compScore}`;
+      } else if (compScore > userScore) {
+        finalMessage = `💔 Game Over! You lost ${userScore} to ${compScore}`;
+      } else {
+        finalMessage = `🤝 Game Over! It's a tie at ${userScore} each!`;
+      }
+      document.getElementById('resultText').textContent = finalMessage;
+      document.getElementById('choicesBox').style.pointerEvents = 'none';
+      document.getElementById('playAgainBtn').classList.remove('hidden');
+    }
+
+    function resetGame() {
+      userScore = 0;
+      compScore = 0;
+      round = 1;
+      document.getElementById('resultText').textContent = 'Make your move!';
+      document.getElementById('scoreBoard').textContent = `You: 0 | Computer: 0`;
+      document.getElementById('roundInfo').textContent = `Round 1 of ${maxRounds}`;
+      document.getElementById('choicesBox').style.pointerEvents = 'auto';
+      document.getElementById('playAgainBtn').classList.add('hidden');
+    }
+  </script>
